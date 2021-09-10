@@ -8,25 +8,24 @@ spring:
   application:
     name: MS-GATEWAY
   cloud:
+#    loadbalancer.ribbon.enabled: false
     gateway:
       discovery:
         locator:
           enable: true
+          lower-case-service-id: true
       routes:
         - id: MS-USER
-          uri: lb://MS-USER
+          uri: lb://ms-user
           predicates:
             - Path=/users/**
-#          filters:
-#            - RewritePath=/users/(?<path>.*), /$\{path}
         - id: MS-DEPARTMENT
-          uri: lb://MS-DEPARTMENT
+          uri: lb://ms-department
           predicates:
             - Path=/departments/**
-#          filters:
-#            - RewritePath=/departments/(?<path>.*), /$\{path}
 eureka.instance:
   instance-id: ${spring.application.name}:${random.uuid}
+  prefer-ip-address: true
 
 # actuator
 management:
@@ -40,3 +39,11 @@ management:
     web:
       exposure:
         include: '*'
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.ipc.netty: DEBUG
+    reactor.netty: DEBUG
