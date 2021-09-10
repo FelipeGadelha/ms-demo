@@ -12,17 +12,17 @@ spring:
       discovery:
         locator:
           enable: true
-#      routes:
-#        - id: MS-USER
-#          uri: lb://MS-USER
-#          predicates:
-#            - Path=/users/**
+      routes:
+        - id: MS-USER
+          uri: lb://MS-USER
+          predicates:
+            - Path=/users/**
 #          filters:
 #            - RewritePath=/users/(?<path>.*), /$\{path}
-#        - id: MS-DEPARTMENT
-#          uri: lb://MS-DEPARTMENT
-#          predicates:
-#            - Path=/departments/**
+        - id: MS-DEPARTMENT
+          uri: lb://MS-DEPARTMENT
+          predicates:
+            - Path=/departments/**
 #          filters:
 #            - RewritePath=/departments/(?<path>.*), /$\{path}
 eureka.instance:

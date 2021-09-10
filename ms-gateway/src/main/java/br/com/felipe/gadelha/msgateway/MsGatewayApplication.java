@@ -15,14 +15,14 @@ public class MsGatewayApplication {
 		SpringApplication.run(MsGatewayApplication.class, args);
 	}
 
-	@Bean
-	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-		return builder.routes()
-				.route("MS-USER", r -> r.path("/users/**")
-						.uri("lb://MS-USER"))
-				.route("MS-DEPARTMENT", r -> r.host("/departments/**")
-						.uri("lb://MS-DEPARTMENT"))
-				.build();
-	}
+//	@Bean
+//	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+//		return builder.routes()
+//				.route("MS-USER", r -> r.path("/users/**")
+//						.uri("lb://MS-USER"))
+//				.route("MS-DEPARTMENT", r -> r.host("/departments/**")
+//						.uri("lb://MS-DEPARTMENT"))
+//				.build();
+//	}
 
 }
