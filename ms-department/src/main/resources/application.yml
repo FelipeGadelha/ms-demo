@@ -3,7 +3,15 @@ server:
 spring:
   application:
     name: MS-DEPARTMENT
-eureka.instance.instance-id: ${spring.application.name}:${random.uuid}
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+    instance-id: ${spring.application.name}:${random.uuid}
 #eureka:
 #  client:
 #    register-with-eureka: true

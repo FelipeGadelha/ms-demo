@@ -8,7 +8,6 @@ spring:
   application:
     name: MS-GATEWAY
   cloud:
-#    loadbalancer.ribbon.enabled: false
     gateway:
       discovery:
         locator:
@@ -19,13 +18,32 @@ spring:
           uri: lb://ms-user
           predicates:
             - Path=/users/**
+#          filters:
+#            - name: CircuitBreaker
+#              args:
+#                name: MS-USER
+#                fallbackUri: forward:/ms-user-fallback
         - id: MS-DEPARTMENT
           uri: lb://ms-department
           predicates:
             - Path=/departments/**
-eureka.instance:
-  instance-id: ${spring.application.name}:${random.uuid}
-  prefer-ip-address: true
+#          filters:
+#            - name: CircuitBreaker
+#              args:
+#                name: MS-DEPARTMENT
+#                fallbackUri: forward:/ms-department-fallback
+
+eureka:
+  client:
+#    register-with-eureka: true
+#    fecth-registry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+    instance-id: ${spring.application.name}:${random.uuid}
 
 # actuator
 management:
