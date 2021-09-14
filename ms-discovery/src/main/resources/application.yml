@@ -1,14 +1,9 @@
-#server:
-#  port: 8761
-#eureka:
-#  client:
-#    register-with-eureka: false
-#    fetch-registry: false
 server:
   port: 8761
 eureka:
   client:
-    registerWithEureka: false
+    register-with-eureka: false
+    fetch-registry: false
   server:
 #    enableSelfPreservation: false
     expected-client-renewal-interval-seconds: 3
