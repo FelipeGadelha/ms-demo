@@ -6,3 +6,17 @@ spring:
   cloud:
     config:
       import: "optional: configserver: http://localhost:9000?fail-fast=true&max-attempts=10&max-interval=1500&multiplier=1.2&initial-interval=1100/"
+# prometheus
+management:
+  endpoint:
+    health:
+      status:
+        http-mapping:
+          down: 500
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+    prometheus:
+      enabled: true

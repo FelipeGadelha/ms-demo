@@ -1,0 +1,182 @@
+version: '3.9'
+services:
+
+  discovery-api:
+    build:
+      dockerfile: ./ms-discovery/Dockerfile
+      context: .
+    image: ms-discovery/api
+    ports:
+      - 8761:8761
+  
+  config-api:
+    build:
+      dockerfile: ./ms-config/Dockerfile
+      context: .
+    image: ms-config/api
+    ports:
+      - 8888:8888
+    depends_on:
+      - discovery-api
+
+  gateway-api:
+    build:
+      dockerfile: ./ms-gateway/Dockerfile
+      context: .
+    image: ms-gateway/api
+    ports:
+      - 9999:9999
+    depends_on:
+      - discovery-api
+      - config-api
+  user-api:
+    build:
+      dockerfile: ./ms-user/Dockerfile
+      context: .
+    image: ms-user/api
+    ports:
+      - 8002:9002
+    depends_on:
+      - discovery-api
+      - config-api
+      - gateway-api
+
+  department-api:
+    build:
+      dockerfile: ./ms-department/Dockerfile
+      context: .
+    image: ms-department/api
+    ports:
+      - 8001:9001
+    depends_on:
+      - discovery-api
+      - config-api
+      - gateway-api
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+     - prometheus-volume:/etc/prometheus/
+     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+#    container_name: monitoring_grafana
+    volumes:
+      - grafana-volume:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+  trace:
+    container_name: trace
+    image: openzipkin/zipkin
+    restart: always
+    ports: 
+      - 9411:9411
+    expose: 
+      - 9411
+
+#  logspout:
+#    image: gliderlabs/logspout:v3
+#    command: 'udp://logstash:5000'
+#    depends_on:
+#      - logstash
+#    volumes: 
+#      - 'var/run/docker.sock:/tmp/docker.sock'
+#    depends_on: 
+#      - elasticsearch
+#      - logstash
+#      - kibana
+
+#  logstash:
+#    image: logstash:2.1.1
+#    environment: 
+#      - STDOUT=true
+#    links: 
+#      - elasticsearch
+#    depends_on: 
+#      - elasticsearch
+#      - kibana
+#    command: 'logstash -e "input { udp { port => 5000 } } output { elasticsearch { hosts => elasticsearch } }"'
+
+#  kibana:
+#    image: kibana:4.1.2
+#    links:
+#      - elasticsearch
+#    environment:
+#      - ELASTICSEARCH_URL=http://elasticsearch:9200
+#    ports:
+#      - 5601:5601
+#    depends_on:
+#      - elasticsearch
+
+#  elasticsearch:
+#    image: elasticsearch:1.5.2
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
+
+
+#  postgres:
+#    image: 'postgres:alpine'
+#    volumes:
+#      - postgres-volume:/var/lib/postgresql/data
+#    ports:
+#      - 5432:5432
+#    environment:
+#      POSTGRES_USER: keycloak
+#      POSTGRES_PASSWORD: password
+#      POSTGRES_DB: keycloak
+#      POSTGRES_HOST: postgres
+
+#  keycloak:
+#    image: jboss/keycloak
+#    ports:
+#      - 18443:8443
+#      - 18080:8080
+#      - 19990:9990
+#    depends_on:
+      # Just a delay to wait for postgres! This is not recommended!
+#      - grafana
+#      - prometheus
+#      - postgres
+#      - zookeeper
+#      - jaeger
+#      - kafka
+#      - contas
+#    environment:
+#      DB_VENDOR: postgres
+#      DB_ADDR: postgres
+#      DB_PORT: 5432
+#      DB_DATABASE: keycloak
+#      DB_USER: keycloak
+#      DB_PASSWORD: password
+#      KEYCLOAK_USER: admin
+#      KEYCLOAK_PASSWORD: Pa55w0rd
+#      POSTGRES_PORT_5432_TCP_ADDR: 127.0.0.1
+
+#  jaeger:
+#    image: jaegertracing/all-in-one
+#    ports:
+#      - 5775:5775/udp
+#      - 6831:6831/udp
+#      - 6832:6832/udp
+#      - 5778:5778
+#      - 16686:16686
+#      - 14268:14268
+#      - 14250:14250
+#      - 9411:9411
+#    environment:
+#      COLLECTOR_ZIPKIN_HTTP_PORT: 9411
+
+
+volumes:
+  grafana-volume:
+  prometheus-volume:
+#  postgres-volume:

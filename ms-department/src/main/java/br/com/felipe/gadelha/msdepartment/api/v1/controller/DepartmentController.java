@@ -24,3 +24,4 @@ public class DepartmentController {
         return departmentService.findById(id);
     }
 }
+
